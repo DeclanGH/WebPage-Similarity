@@ -1,27 +1,32 @@
 import javax.swing.*;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class MainClass {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> createGUI());
-        // String userLink = JOptionPane.showInputDialog(null, "Paste your website's link here");
     }
 
     private static void createGUI(){
-        JFrame frame = new JFrame("Webpage Link");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Exit button
-        frame.setSize(450, 200);
+        String userLink = JOptionPane.showInputDialog(null, "Paste your website's link here");
 
-        JPanel panel = new JPanel();
-        JLabel label = new JLabel("Input your website's link here");
-        JTextField textField = new JTextField(20);
-        JLabel label1 = new JLabel();
+        try{
+            URL url = new URL(userLink); // Creating a URL from the user input
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("HEAD");
+            int responseCode = connection.getResponseCode();
+            
+            if (responseCode == HttpURLConnection.HTTP_OK){
+                webScraper(userLink);
+            }
+        } catch (IOException e) {
+            JFrame frame = new JFrame();
+            JOptionPane.showMessageDialog(frame,"The link you provided does not exist.","ERROR!",JOptionPane.ERROR_MESSAGE);
+            System.exit(0);
+        }
+    }
 
-        panel.add(label);
-        panel.add(textField);
-        panel.add(label1);
-
-        frame.add(panel);
-        frame.setVisible(true);
-
+    private static void webScraper(String userLink) {
     }
 }
