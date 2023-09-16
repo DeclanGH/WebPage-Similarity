@@ -18,4 +18,4 @@ Test your program thoroughly before submitting, and arrange a demo within 48 hou
 
 * * *
 
-[Doug Lea](http://g.oswego.edu/dl)
+Professor: [Doug Lea](https://gee.cs.oswego.edu/dl/)
