@@ -36,5 +36,6 @@ public class MainClass {
         Pattern pattern = Pattern.compile("[-/()—.\"',:;!?]"); // Filtering out these characters and replacing with nothing
         String title = doc.text().replaceAll(pattern.pattern(), "").toLowerCase();
         //System.out.println(title);
+
     }
 }
