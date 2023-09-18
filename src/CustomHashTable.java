@@ -1,4 +1,4 @@
-public class Tfidf {
+public class CustomHashTable implements java.io.Serializable{
     private int num;
     private String str;
 
