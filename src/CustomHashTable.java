@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-
 public class CustomHashTable{
     static final class Node {
         Object key;
         Node next;
-        int count;
+        // int count;
         // Object value;
         Node(Object k, Node n) { key = k; next = n; }
     }
@@ -50,34 +48,4 @@ public class CustomHashTable{
         table = newTable;
     }
 
-    double doCosineSimilarity(String[] a, String[] b){
-
-        // Declaring variables necessary for the math (cosine similarity)
-        double similarity;
-        int numerator = 0;
-        int denominatorA;
-        int denominatorB;
-
-        CustomHashTable ht1 = new CustomHashTable();
-        CustomHashTable ht2 = new CustomHashTable();
-        ArrayList<Object> lst = new ArrayList<>();
-
-        // Each repeat in ht1 and ht2 forms the numerator and the sizes forms the denominator
-        for(Object obj : a){
-            if(ht1.add(obj)) lst.add(obj);
-        }
-        denominatorA = ht1.size;
-        for(Object obj : b){
-            ht2.add(obj);
-        }
-        denominatorB = ht2.size;
-        for(Object obj : lst){
-            if(ht2.contains(obj)) numerator += 1;
-        }
-
-        // Tweaked the formula to only necessary data
-        similarity = numerator/(Math.sqrt(denominatorA)*Math.sqrt(denominatorB));
-
-        return similarity;
-    }
 }
