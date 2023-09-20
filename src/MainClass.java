@@ -29,7 +29,12 @@ public class MainClass {
 
     private static void getLinkText(String userLink) throws IOException {
         WebScraper webscraper = new WebScraper();
+        WebScraper weber = new WebScraper();
         String[] wordsInLink = webscraper.webScrape(userLink);
+        String[] sample = weber.webScrape("https://en.wikipedia.org/wiki/Love");
+        CustomHashTable hash = new CustomHashTable();
+        double ans = hash.doCosineSimilarity(wordsInLink,sample);
+        // System.out.println(ans);
         // System.out.println(Arrays.stream(wordsInLink).toList());
     }
 }
