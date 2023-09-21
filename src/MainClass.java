@@ -60,8 +60,9 @@ public class MainClass {
             JOptionPane.showMessageDialog(null,"We found a "+ (int)(maxSimilarity*100)
                     +"% match with this link " + arrayOfLinks.getString(indexOfMaxSimilarity),"Congrats!",JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(null,"The link you provided does not exist.","ERROR!",JOptionPane.ERROR_MESSAGE);
-            compareLinks();
+            e.printStackTrace();
+            //JOptionPane.showMessageDialog(null,"The link you provided does not exist.","ERROR!",JOptionPane.ERROR_MESSAGE);
+            //compareLinks();
         }
     }
 
