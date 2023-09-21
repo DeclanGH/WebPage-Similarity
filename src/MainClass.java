@@ -1,41 +1,68 @@
+import javax.json.*;
 import javax.swing.*;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
+
 
 public class MainClass {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(MainClass::createGUI);
+        SwingUtilities.invokeLater(MainClass::compareLinks);
     }
 
-    private static void createGUI(){
-        String userLink = JOptionPane.showInputDialog(null, "Paste your website's link here");
+    private static JsonObject readFile() throws IOException {
 
-        try{ // Checking if URL exists before proceeding
-            URL url = new URL(userLink);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("HEAD");
-            int responseCode = connection.getResponseCode();
-            
-            if (responseCode == HttpURLConnection.HTTP_OK){
-                getLinkText(userLink);
+        // Properties
+        Properties properties = new Properties();
+        FileInputStream fis = null;
+        try{
+            fis = new FileInputStream("config.properties");
+        }catch (FileNotFoundException e){
+            System.out.println("change the filepath in `config.properties` to match yours.");
+        }
+        properties.load(fis);
+
+        // GET json file location (change the .json file name below to match yours)
+        String filePath = properties.getProperty("filepath") + File.separator + "MyLinks.json";
+        File inputFile = new File(filePath);
+
+        // READ json file
+        InputStream inputStream = null;
+        try{
+            inputStream = new FileInputStream(inputFile);
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
+        JsonReader reader = Json.createReader(inputStream);
+        JsonObject object = reader.readObject();
+        inputStream.close();
+        reader.close();
+
+        return object;
+    }
+
+    private static void compareLinks() {
+        WebScraper ws1 = new WebScraper();
+        WebScraper ws2 = new WebScraper();
+        double maxSimilarity = -1000; // initialize with a random low score less than zero
+        int indexOfMaxSimilarity = -1;
+        try {
+            JsonArray arrayOfLinks = readFile().getJsonArray("Links");
+            String userLink = JOptionPane.showInputDialog(null, "Paste your website's link here");
+            String[] wordsInUserLink = ws1.webScrape(userLink);
+            for(int i=0; i<10; i++){
+                String[] wordsInMyLinks = ws2.webScrape(arrayOfLinks.getString(i));
+                double currSimilarityScore = doCosineSimilarity(wordsInUserLink,wordsInMyLinks);
+                if(currSimilarityScore > maxSimilarity){
+                    maxSimilarity = currSimilarityScore;
+                    indexOfMaxSimilarity = i;
+                }
             }
+            JOptionPane.showMessageDialog(null,"We found a "+ (int)(maxSimilarity*100)
+                    +"% match with this link " + arrayOfLinks.getString(indexOfMaxSimilarity),"Congrats!",JOptionPane.INFORMATION_MESSAGE);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(null,"The link you provided does not exist.","ERROR!",JOptionPane.ERROR_MESSAGE);
-            System.exit(0);
+            compareLinks();
         }
-    }
-
-    private static void getLinkText(String userLink) throws IOException {
-        WebScraper webscraper = new WebScraper();
-        WebScraper weber = new WebScraper();
-        String[] wordsInLink = webscraper.webScrape(userLink);
-        String[] sample = weber.webScrape("https://en.wikipedia.org/wiki/Love");
-        double ans = doCosineSimilarity(wordsInLink,sample);
-        System.out.println(ans);
-        // System.out.println(Arrays.stream(wordsInLink).toList());
     }
 
     private static double doCosineSimilarity(String[] a, String[] b){
@@ -63,7 +90,7 @@ public class MainClass {
             if(ht2.contains(obj)) numerator += 1;
         }
 
-        // Tweaked the formula to only necessary data
+        // Tweaked the formula to give only necessary data
         similarity = numerator/(Math.sqrt(denominatorA)*Math.sqrt(denominatorB));
 
         return similarity;
