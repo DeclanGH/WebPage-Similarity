@@ -30,7 +30,7 @@
         </constraints>
         <properties>
           <hideActionText value="false"/>
-          <text value="Run"/>
+          <text value="Compare"/>
         </properties>
       </component>
       <component id="1469" class="javax.swing.JTextField" binding="outputLink1">

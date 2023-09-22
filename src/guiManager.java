@@ -144,6 +144,7 @@ public class guiManager {
             ht2.add(obj);
         }
         denominatorB = ht2.size;
+
         for(Object obj : lst){
             if(ht2.contains(obj)) numerator += 1;
         }
