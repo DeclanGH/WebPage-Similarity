@@ -8,6 +8,7 @@ public class CustomHashTable{
     }
     Node[] table = new Node[8]; // always a power of 2
     int size = 0;
+    // int[] index = new int[size];
 
     boolean contains(Object key) {
         int h = key.hashCode();
