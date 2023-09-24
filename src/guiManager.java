@@ -10,6 +10,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 
 public class guiManager {
@@ -79,7 +80,7 @@ public class guiManager {
         return object;
     }
 
-    public void compareLinks(String userInput) throws IOException {
+    private void compareLinks(String userInput) throws IOException {
         WebScraper ws1 = new WebScraper();
         WebScraper ws2 = new WebScraper();
 
@@ -96,11 +97,16 @@ public class guiManager {
             e.printStackTrace();
         }
 
-        String[] wordsInUserLink = ws1.webScrape(userInput);
+        CustomHashTable ht = new CustomHashTable();
+        String[] userLinkAsArray = ws1.webScrape(userInput);
+        for(String s : userLinkAsArray){
+            ht.add(s);
+        }
+        Object[] userLinkAsSet = ht.toKeyList();
 
         for(int i=0; i<10; i++){
             String[] wordsInMyLinks = ws2.webScrape(arrayOfLinks.getString(i));
-            double currSimilarityScore = doCosineSimilarity(wordsInUserLink,wordsInMyLinks);
+            double currSimilarityScore = doCosineSimilarity(userLinkAsSet,wordsInMyLinks);
             if(currSimilarityScore > maxSimilarity2){ // score must be greater than the smallest max to be considered
                 maxSimilarity2 = currSimilarityScore;
                 indexOfMaxSimilarity2 = i;
@@ -123,33 +129,33 @@ public class guiManager {
         outputLink2.setText(arrayOfLinks.getString(indexOfMaxSimilarity2));
     }
 
-    private static double doCosineSimilarity(String @NotNull [] a, String[] b){
+    private static double doCosineSimilarity(Object @NotNull [] a, String[] b){
+        // Where 'a' represents elements from the link the user provided, and
+        // 'b' represents elements from each link in my array of links.
 
         // Declaring variables necessary for the math (cosine similarity)
         double similarity;
         int numerator = 0;
-        int denominatorA;
+        int denominatorA = 0;
         int denominatorB;
 
-        CustomHashTable ht1 = new CustomHashTable();
-        CustomHashTable ht2 = new CustomHashTable();
-        ArrayList<Object> lst = new ArrayList<>();
-
-        // Each repeat in ht1 and ht2 forms the numerator and the sizes forms the denominator
-        for(Object obj : a){
-            if(ht1.add(obj)) lst.add(obj);
-        }
-        denominatorA = ht1.size;
+        CustomHashTable ht = new CustomHashTable();
         for(Object obj : b){
-            ht2.add(obj);
-        }
-        denominatorB = ht2.size;
-
-        for(Object obj : lst){
-            if(ht2.contains(obj)) numerator += 1;
+            ht.add(obj);
         }
 
-        // Tweaked the formula to give only necessary data
+        // The number of similar elements in 'a' and 'b' form the numerator
+        for(int i=0; i<a.length; i++){
+            Object o = a[i];
+            if(ht.contains(o)) numerator += 1;
+            denominatorA += 1; // to avoid counting null elements
+            if(a[i+1] == null) break;
+        }
+
+        // The number of elements in each (a and b) form data to calculate the denominator
+        denominatorB = ht.getSize();
+
+        // Works the same way as the original cosine similarity formula
         similarity = numerator/(Math.sqrt(denominatorA)*Math.sqrt(denominatorB));
 
         return similarity;

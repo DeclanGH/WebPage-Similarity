@@ -7,8 +7,8 @@ public class CustomHashTable{
         Node(Object k, Node n) { key = k; next = n; }
     }
     Node[] table = new Node[8]; // always a power of 2
+    Object[] keyList = new Object[8]; // creating this for iterating purposes
     int size = 0;
-    int[] index = new int[size];
 
     boolean contains(Object key) {
         int h = key.hashCode();
@@ -28,6 +28,7 @@ public class CustomHashTable{
                 return false;
         }
         table[i] = new Node(key, table[i]);
+        keyList[size] = key;
         ++size;
         if ((float)size/table.length >= 0.75f) {
             resize();
@@ -35,12 +36,16 @@ public class CustomHashTable{
         return true;
     }
 
-    void resize() {
+    void resize() { // I would be sharing the resize method with my keyList
         Node[] oldTable = table;
+        Object[] oldKeyList = keyList;
         int oldCapacity = oldTable.length;
-        int newCapacity = oldCapacity << 1;
+        int newCapacity = oldCapacity << 1; // doubles the capacity
         Node[] newTable = new Node[newCapacity];
+        Object[] newKeyList = new Object[newCapacity];
+
         for (int i = 0; i < oldCapacity; ++i) {
+            newKeyList[i] = oldKeyList[i]; // populate the new one with the "old"
             for (Node e = oldTable[i]; e != null; e = e.next) {
                 int h = e.key.hashCode();
                 int j = h & (newTable.length - 1);
@@ -48,14 +53,15 @@ public class CustomHashTable{
             }
         }
         table = newTable;
+        keyList = newKeyList;
     }
 
-    void iterate(){
-        for(Node node : table){
-            if(node != null){
+    Object[] toKeyList(){
+        return keyList;
+    }
 
-            }
-        }
+    int getSize(){
+        return size;
     }
 
 }
