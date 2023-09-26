@@ -2,7 +2,7 @@ import javax.swing.*;
 
 public class MainClass {
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {runGui();});
+        SwingUtilities.invokeLater(() -> runGui());
     }
 
     private static void runGui(){
