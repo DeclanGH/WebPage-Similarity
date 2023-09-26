@@ -1,3 +1,10 @@
+/**
+ * Author: Declan ONUNKWO
+ * College: SUNY Oswego
+ * CSC 365 Project 1
+ * Fall 2023
+ */
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;

@@ -1,3 +1,10 @@
+/**
+ * Author: Declan ONUNKWO
+ * College: SUNY Oswego
+ * CSC 365 Project 1
+ * Fall 2023
+ */
+
 public class CustomHashTable{
     static final class Node {
         Object key;
